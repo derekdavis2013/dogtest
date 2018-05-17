@@ -1,10 +1,73 @@
 import React, { Component } from "react";
+import _ from 'lodash';
+import axios from 'axios';
+import loading from './loader.gif';
 
 class Home extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            loadingState: 'NOT_STARTED',
+            url: ''
+        }
+    }
+
+    getBoi = () => {
+        this.setState(_.assign({}, this.state, { loadingState: 'PENDING' }));
+        axios.get('https://random.dog/woof.json').then((payload) => {
+            this.setState(_.assign({}, this.state, { url: payload.data.url, loadingState: 'SUCCESS' }))
+        });
+    };
+
+    renderPicOrMp4() {
+        if(_.endsWith(this.state.url, 'mp4')) {
+            return (
+                <video width="480" height="320" controls autoPlay>
+                    <source src={this.state.url} type="video/mp4" />
+                </video>
+            );
+        }
+
+        return (
+            <img src={this.state.url} />
+        );
+    }
+
+    loadDoggo = () => {
+        switch (this.state.loadingState) {
+            case 'NOT_STARTED': {
+                return (
+                    <div>
+                        <h1>CLICK BUTTON TO LOAD A V GOOD BOI</h1>
+                    </div>
+                );
+            }
+
+            case 'PENDING': {
+                return (
+                    <div>
+                        <h1>FETCHING THE FLOOF</h1>
+                        {/*<img src={loading} />*/}
+                    </div>
+                );
+            }
+
+            case 'SUCCESS': {
+                return this.renderPicOrMp4();
+            }
+        }
+    };
+
     render() {
         return (
-            <div>
-                <h1>Hello World</h1>
+            <div className="text-center">
+                {this.loadDoggo()}
+                <div>
+                    <button onClick={this.getBoi}>
+                        One Good Boi, Please
+                    </button>
+                </div>
             </div>
         );
     }

@@ -44,6 +44,12 @@ module.exports = {
             {
                 test: /\.(png|jpg|woff|woff2|eot|ttf|svg)(\?[a-z0-9=\.]+)?$/,
                 use: "url-loader?limit=100000"
+            },
+            {
+                test: /\.(gif|mov|mp4)$/,
+                use: [
+                    'file-loader'
+                ]
             }
         ]
     },
